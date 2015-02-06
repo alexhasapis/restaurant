@@ -1,0 +1,23 @@
+<h2>Add New Food Item</h2>
+
+<form action="/foods" method="POST">
+
+<label for="food_name">Name:</label>
+  <input id="food_name" <input type="text" name="food[name]"><br>
+
+<label for="food_course">Course:</label>
+  <input id="food_course" <input type="text" name="food[course]"><br>
+
+<label for="food_style">Style:</label>
+  <input id="food_style" <input type="text" name="food[style]"><br>
+
+<label for="allergens">Allergens:</label>
+  <input id="allergens" name="food[allergens]"><br>
+
+<label for="food_price">Price:</label>
+  <input id="food_price" <input type="number" step="any" name="food[price]" min=1 max=50 value=1.00><br>
+
+
+<input type="submit" value="Create Food Item">
+
+</form>

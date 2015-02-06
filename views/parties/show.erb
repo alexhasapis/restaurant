@@ -1,0 +1,21 @@
+<h2>Table <%= @party.table_number %></h2>
+<p>Number of Guests: <%= @party.number_guests %></p>
+<p><a href="/parties/<%= @party.id %>/edit">Edit Party Information</a>
+
+<form action="/parties/<%= @party.id %>" method='POST'>
+  <input type="hidden" name="_method" value="DELETE">
+  <input type="submit" value="Delete Party">
+</form>
+
+<h2>Current Order:<h2>
+  <ul>
+  <% if @party.orders %>
+    <% @party.foods.map do |food| %>
+    <li> 
+      <%= food.name %> 
+    </li>
+    <% end %>
+  <% end %>
+  </ul>
+  <p><a href="/orders/edit">Edit Order</a>
+

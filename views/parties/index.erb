@@ -1,0 +1,10 @@
+<h2>Current Parties<h2>
+<ol> 
+<% @parties.each do |party| %>
+  <% if party.paid == false %>
+    <li>
+      <a href="/parties/<%= party.id %>">Table <%= party.table_number %></a>
+    </li>
+  <% end %>
+<% end %>
+<h3><a href="/parties/new">Create a New Party</a></h3>

@@ -1,0 +1,21 @@
+<h2>Create New Party</h2>
+
+<form action="/parties" method="POST">
+
+Table Number: <select name="party[table_number]">
+  <% 10.times do |table| %>
+    <option value="<%= table + 1 %>" selected="selected">Table <%= table + 1 %></option>
+  <% end %>
+</select><br>
+
+<label for="number_guests">Number of Guests:</label>
+  <input id="number_guests" <input type="number" name="party[number_guests]" min=1 max=15 value=1><br>
+
+Paid: <select name="party[paid]">
+  <option value="true" selected="selected">True</option>
+  <option value="false" selected="selected">False</option>
+</select><br>
+
+<input type="submit" value="Create Party">
+
+</form>

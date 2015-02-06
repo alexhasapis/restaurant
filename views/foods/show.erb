@@ -1,0 +1,21 @@
+<h2><%=@food.name%></h2>
+<ul>
+  <li>
+    Price: <%=@food.price%>
+  </li>
+  <li>
+    Course: <%=@food.course%>
+  </li>
+    <li>
+    Style: <%=@food.style%>
+  </li>
+</ul>
+<p><a href="/foods/<%=@food.id%>/edit">Edit Food Info</a></p>
+
+<form action="/foods/<%= @food.id %>" method="POST"> 
+  <input type="hidden" name="_method" value="DELETE">
+  <input type="submit" value="Delete Food Item">
+</form>
+
+<h3>Current Orders</h3>
+  

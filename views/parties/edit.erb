@@ -1,0 +1,21 @@
+<h2>Edit Party at Table <%= @party.table_number %></h2>
+
+<form action="/parties/<%= @party.id %>" method="POST">
+
+Table Number: <select name="party[table_number]">
+  <% 10.times do |table| %>
+    <% if table == @party.table_number.to_i - 1 %>
+      <option value="<%= table + 1 %>" selected="selected">Table <%= table + 1 %></option>
+    <% else %>
+     <option value="<%= table + 1 %>"> Table <%= table + 1 %></option>
+     <% end %>
+  <% end %>
+</select><br>
+
+<label for="number_guests">Number of Guests:</label>
+  <input id="number_guests" <input type="number" name="party[number_guests]" min=1 max=15 value="<%= @party.number_guests %>"><br>
+
+<input type="hidden" name="_method" value="PATCH">
+<input type="submit" value="Update Party">
+
+</form>
