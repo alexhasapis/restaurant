@@ -1,0 +1,12 @@
+<h2>Order Form</h2>
+
+<form action="/parties/<%= @party.id %>/orders" method="POST">
+  <% @foods.each do |food| %>
+
+  <label for="food_order"><%= food.name %>
+  <input id="food_order" <input type="number" name="order[<%= food.id %>][quantity]" max=50 value= ><br>
+
+<% end %>
+</form>
+
+<input type="submit" value="Create Order">

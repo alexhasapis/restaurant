@@ -1,0 +1,18 @@
+<h2>Edit Order</h2>
+
+<form action="/parties/<%= @party.id %>/orders" method="POST">
+  <% @foods.each do |food| %>
+
+  <label for="food_order"><%= food.name %>
+  <input id="food_order" <input type="number" name="order[<%= food.id %>][quantity]" max=50 
+
+  <% if Order.where( "food_id = #{food.id} and party_id = #{@party.id}") %>
+        value="<%= Order.where( "food_id = #{food.id} and party_id = #{@party.id}").first.quantity %>"><br>
+    <% else %> 
+        value="0"><br>
+    <% end %>">
+  <% end %>
+</form>
+
+<input type="hidden" name="_method" value="PATCH">
+<input type="submit" value="Edit Order">

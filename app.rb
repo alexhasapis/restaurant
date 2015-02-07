@@ -9,7 +9,11 @@ Dir["models/*.rb"].each do |file|
   require_relative file
 end  
 
+Dir["helpers/*.rb"].each do |file|
+  require_relative file
+end  
 #UTILITY ROUTES
+helpers WaitersHelper
 
 get '/console' do
 	Pry.start(binding)
@@ -22,7 +26,7 @@ get '/' do
 end
 
 get '/foods' do 
-  @foods = Food.all
+  @foods = Food.all.order(:course, :style)
   erb :'/foods/index'
 end
 
@@ -55,10 +59,29 @@ post "/parties" do
   redirect to ("/parties/#{@new_party.id}")
 end
 
-#edit routes
+post "/parties/:id/orders" do 
+  params[:order].each do |order, quantity|
+    if quantity[:quantity]
+      Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])  
+    end
+  end
+  
+  redirect to ("/parties/#{params[:id]}") 
+end
+
+#CREATE ORDERS
+
+get "/parties/:id/orders/new" do |group|
+  @foods = Food.all.order(:course, :style)
+  @party = Party.find(group)
+  erb :'orders/new'
+end
+
+
+#EDIT ROUTES
 #update
-get '/foods/:id/edit' do |food_id|
-  @food = Food.find(food_id)
+get '/foods/:id/edit' do |item|
+  @food = Food.find(item)
   erb :'foods/edit'
 end
 
@@ -66,31 +89,41 @@ patch '/foods/:id' do
   edited_food = Food.find(params[:id])
   edited_food.update(params[:food])
   edited_food.save
+  
   redirect to ("/foods/#{edited_food.id}")
 end
 
-get '/parties/:id/edit' do |party_id|
-  @party = Party.find(party_id)
+get '/parties/:id/edit' do |group|
+  @party = Party.find(group)
   erb :'/parties/edit'
 end
+
+get '/parties/:id/orders/edit' do |group|
+  @foods = Food.all.order(:course, :style)
+  @party = Party.find(group)
+  #Pry.start(binding)
+  erb :'orders/edit'
+end
+
 
 patch '/parties/:id' do 
   edited_party = Party.find(params[:id])
   edited_party.update(params[:party])
   edited_party.save
+  
   redirect to ("/parties/#{edited_party.id}")
 end
 
-#show routes
+#SHOW ROUTES
 
 #Show Food with parties that have ordered
-get '/foods/:id' do |food_id|
-  @food = Food.find(food_id)
+get '/foods/:id' do |item|
+  @food = Food.find(item)
     erb :"foods/show"
 end
 
-get '/parties/:id' do |party_id|
-  @party = Party.find(party_id)
+get '/parties/:id' do |group|
+  @party = Party.find(group)
     erb :"parties/show"
 end
 
@@ -98,6 +131,7 @@ end
 delete '/foods/:id' do 
   deleted_food = Food.find(params[:id])
   deleted_food.destroy
+  
   redirect to ('/foods')
 end
 
