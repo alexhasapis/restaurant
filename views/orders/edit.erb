@@ -6,11 +6,11 @@
   <label for="food_order"><%= food.name %>
   <input id="food_order" <input type="number" name="order[<%= food.id %>][quantity]" max=50 
 
-  <% if Order.where( "food_id = #{food.id} and party_id = #{@party.id}") %>
+  <% if Order.where( "food_id = #{food.id} and party_id = #{@party.id}") != []%>
         value="<%= Order.where( "food_id = #{food.id} and party_id = #{@party.id}").first.quantity %>"><br>
     <% else %> 
-        value="0"><br>
-    <% end %>">
+       value="0"><br>
+    <% end %>
   <% end %>
 </form>
 

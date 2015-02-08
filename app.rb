@@ -61,13 +61,14 @@ end
 
 post "/parties/:id/orders" do 
   params[:order].each do |order, quantity|
-    if quantity[:quantity]
+    if quantity[:quantity] > 0
       Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])  
     end
   end
   
   redirect to ("/parties/#{params[:id]}") 
 end
+
 
 #CREATE ORDERS
 
@@ -105,6 +106,19 @@ get '/parties/:id/orders/edit' do |group|
   erb :'orders/edit'
 end
 
+patch "/parties/:id/orders" do 
+  params[:order].each do |order, quantity|
+    if Order.where("food_id = #{order.to_i} and party_id = #{params[:id]}" ) != []    
+      edit_order = Order.where( "food_id = #{order.to_i} and party_id = #{params[:id]}" )
+      edit_order.update_all(quantity: quantity[:quantity])
+ 
+    elsif quantity[:quantity].to_i > 0
+    Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])
+    end
+  end
+  redirect to ("/parties/#{params[:id]}") 
+end
+
 
 patch '/parties/:id' do 
   edited_party = Party.find(params[:id])
@@ -125,6 +139,12 @@ end
 get '/parties/:id' do |group|
   @party = Party.find(group)
     erb :"parties/show"
+end
+
+get "/parties/:id/receipt" do |group|
+  @party = Party.find(group)
+  @total = 0
+  erb :'receipts/show'
 end
 
 #destroy
@@ -150,5 +170,3 @@ get '/*' do
 end
 
 
-
-#receipt page group by food, need sum

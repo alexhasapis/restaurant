@@ -1,5 +1,5 @@
 <h2>Table <%= @party.table_number %></h2>
-<p>Number of Guests: <%= @party.number_guests %></p>
+<h4>Number of Guests: <%= @party.number_guests %></h4>
 <p><a href="/parties/<%= @party.id %>/edit">Edit Party Information</a>
 
 <form action="/parties/<%= @party.id %>" method='POST'>
@@ -17,8 +17,8 @@
       <% end %>
       </ul>
       <p><a href="/parties/<%= @party.id %>/orders/edit">Edit Order</a></p>
+      <p><a href="/parties/<%= @party.id %>/receipt">Print Receipt</a></p>
   <% else %>
       <p><a href="/parties/<%= @party.id %>/orders/new">Create Order</a></p>
   <% end %>
-
 
