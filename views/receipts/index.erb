@@ -1,0 +1,17 @@
+<h1>Receipts</h1> 
+<% @receipts.each do |receipt| %>
+<h2>Receipt # <%= receipt.id %></h2>
+  <h4>Party # <%= receipt.party.id %>
+  <ol>
+      <% receipt.party.orders.map do |order| %>
+        <li> 
+          <%= order.food.name %>: <%= order.quantity %> @ <%= order.food.price %><br>
+          Subtotal: <%= (order.quantity * order.food.price).round(2) %>
+        </li><br>
+      <% end %>
+  </ol>
+  <h4>Total: <%= receipt.total %></h4>
+  <h4>Tip: <%= receipt.total %>
+  <h3>Grand Total: <%= receipt.total + receipt.tip %></h3>
+  <br>
+<% end %>

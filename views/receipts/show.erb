@@ -1,22 +1,36 @@
 <h1>Receipt</h1>
-<h4>Order</h4>
+<h3>Order</h3>
     <ol>
       <% @party.orders.map do |order| %>
         <li> 
           <%= order.food.name %>: <%= order.quantity %> @ <%= order.food.price %><br>
-          Subtotal: <%= order.quantity * order.food.price %>
+          Subtotal: <%= (order.quantity * order.food.price).round(2) %>
         </li><br>
         <% @total = @total + order.quantity * order.food.price %>
       <% end %>
     </ol>
     
-    <form action: "/parties/<%= @party.id %>/receipt" method: "POST">
+    <form action="/parties/<%= @party.id %>/receipt" method="POST">
     <label for="receipt_total">Total:
     <input id="receipt_total" <input type="number"  name="receipt[total]" readonly value="<%= @total.round(2) %>"><br>
 
     <label for="receipt_tip">Tip:
-    <input id="receipt_tip" <input type="number"  name="receipt[total]" min="0" value="0"><br>
+    <input id="receipt_tip" <input type="number"  name="receipt[tip]" step:"any" min="0" value="0"><br>
+    </form>
+
+<h4>Suggested Tip:<h4>
+  <ul>
+    <li>
+      15%: <%= (@total * 0.15).round(2) %>
+    </li>
+    <li>
+      20%: <%= (@total * 0.20).round(2) %>
+    </li>
+    <li>
+      25%: <%= (@total * 0.25).round(2) %>
+    </li>
+  </ul>
 
     <input type="submit" value="Close Receipt">
-    </form>
+  
     

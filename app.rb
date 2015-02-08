@@ -32,9 +32,13 @@ end
 
 #only show parties that have not paid
 get '/parties' do
-  #@parties = Party.find_by_paid(false)
-  @parties = Party.all
+  @parties = Party.all.select { |party| party.paid == false }
   erb :"parties/index"
+end
+
+get '/receipts' do
+  @receipts = Receipt.all
+  erb :"receipts/index"
 end
 
 #new routes
@@ -59,6 +63,15 @@ post "/parties" do
   redirect to ("/parties/#{@new_party.id}")
 end
 
+
+#CREATE ORDERS
+
+get "/parties/:id/orders/new" do |group|
+  @foods = Food.all.order(:course, :style)
+  @party = Party.find(group)
+  erb :'orders/new'
+end
+
 post "/parties/:id/orders" do 
   params[:order].each do |order, quantity|
     if quantity[:quantity] > 0
@@ -69,13 +82,14 @@ post "/parties/:id/orders" do
   redirect to ("/parties/#{params[:id]}") 
 end
 
+#CLOSE ORDERS
 
-#CREATE ORDERS
-
-get "/parties/:id/orders/new" do |group|
-  @foods = Food.all.order(:course, :style)
-  @party = Party.find(group)
-  erb :'orders/new'
+post "/parties/:id/receipt" do
+  #Pry.start(binding)
+  party = Party.find(params[:id])
+  new_receipt = Receipt.create(party_id: params[:id], total: params[:receipt][:total], tip: params[:receipt][:tip])
+  party.update(paid: true)
+  redirect to ("/receipts")
 end
 
 
