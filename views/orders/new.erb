@@ -4,7 +4,7 @@
   <% @foods.each do |food| %>
 
   <label for="food_order"><%= food.name %>
-  <input id="food_order" <input type="number" name="order[<%= food.id %>][quantity]" max=50 value= ><br>
+  <input id="food_order" <input type="number" name="order[<%= food.id %>][quantity]" max=50 value=0 ><br>
 
 <% end %>
 </form>

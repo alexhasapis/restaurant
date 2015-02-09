@@ -50,7 +50,7 @@ get '/parties' do
 end
 
 get '/receipts' do
-  @receipts = Receipt.all
+  @receipts = Receipt.all.order(:id)
   erb :"receipts/index"
 end
 
@@ -96,7 +96,7 @@ end
 
 post "/parties/:id/orders" do 
   params[:order].each do |order, quantity|
-    if quantity[:quantity] > 0
+    if quantity[:quantity].to_i > 0
       Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])  
     end
   end
