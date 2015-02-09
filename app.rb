@@ -12,6 +12,9 @@ end
 Dir["helpers/*.rb"].each do |file|
   require_relative file
 end  
+
+enable :sessions
+
 #UTILITY ROUTES
 helpers WaitersHelper
 
@@ -48,8 +51,17 @@ get "/foods/new" do
 end
 
 post "/foods" do 
-  @new_food = Food.create(params[:food])
-  redirect to ("/foods/#{@new_food.id}")
+  new_food = Food.create(params[:food])
+
+  if new_food.valid?
+    redirect to ("/foods/#{new_food.id}")
+  else
+    @food = new_food
+    @error_messages = new_food.errors.messages
+
+    erb :'foods/new'
+  end
+
 end
 
 #create parties
@@ -124,8 +136,11 @@ patch "/parties/:id/orders" do
   params[:order].each do |order, quantity|
     if Order.where("food_id = #{order.to_i} and party_id = #{params[:id]}" ) != []    
       edit_order = Order.where( "food_id = #{order.to_i} and party_id = #{params[:id]}" )
+      
       edit_order.update_all(quantity: quantity[:quantity])
- 
+      if edit_order.first.quantity == 0
+        edit_order.destroy_all
+      end
     elsif quantity[:quantity].to_i > 0
     Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])
     end
@@ -171,9 +186,12 @@ end
 
 delete '/parties/:id' do
   deleted_party = Party.find(params[:id])
-  deleted_orders = deleted_party.orders
+  party_orders = deleted_party.orders
   deleted_party.destroy
-  deleted_orders.destroy
+  
+  party_orders.each do |order|
+    order.destroy
+  end
 
   redirect to ('/parties')
 end

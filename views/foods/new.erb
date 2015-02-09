@@ -1,5 +1,13 @@
 <h2>Add New Food Item</h2>
 
+<% if @error_messages %>
+  <ul>
+    <% @error_messages.each do |error_name, error_message| %>
+       <li class='error'><%= error_name.capitalize %>: <%= error_message[0] %></li>
+    <% end %>
+  </ul>
+<% end %>
+
 <form action="/foods" method="POST">
 
 <label for="food_name">Name:</label>
