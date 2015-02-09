@@ -10,3 +10,5 @@ gem 'sinatra-reloader'
 
 #Utility
 gem 'pry'
+gem 'sass'
+gem 'unicorn'

@@ -16,15 +16,25 @@ end
 enable :sessions
 
 #UTILITY ROUTES
-helpers WaitersHelper
+#helpers WaitersHelper
+get '/css/:name.css' do |name|
+  content_type :css
+  scss "../public/sass/#{name}".to_sym, :layout => false
+end
 
 get '/console' do
 	Pry.start(binding)
 end
 
+get '/set/user/:id' do |id|
+  session[:id] = id
+  @waiter = waiter.find(id)
+  redirect to('/welcome')
+end
+
 #index routes
 
-get '/' do
+get '/index' do
   erb :index
 end
 
@@ -197,8 +207,12 @@ delete '/parties/:id' do
 end
 
 #wildcard route for invalid
-get '/*' do
-  erb :index
+get '*' do
+  if session[:id]
+    redirect to('/index')
+  else
+    "Please go to /set/user/id to log in."
+  end
 end
 
 

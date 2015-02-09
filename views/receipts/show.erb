@@ -1,5 +1,6 @@
 <h1>Receipt</h1>
 <h3>Order</h3>
+<h4>Server: 
     <ol>
       <% @party.orders.map do |order| %>
         <li> 
@@ -14,6 +15,13 @@
     <label for="receipt_total">Total:
     <input id="receipt_total" <input type="number"  name="receipt[total]" readonly value="<%= @total.round(2) %>"><br>
 
+<% if @party.number_guests > 6 %>
+
+    <label for="receipt_tip">Total:
+    <input id="receipt_tip" <input type="number"  name="receipt[total]" readonly value="<%= (@total * 0.18).round(2) %>">
+
+  <% else %>
+ 
     <label for="receipt_tip">Tip:
     <input id="receipt_tip" <input type="number"  name="receipt[tip]" step:"any" min="0" value="0"><br>
     </form>
@@ -30,6 +38,8 @@
       25%: <%= (@total * 0.25).round(2) %>
     </li>
   </ul>
+
+  <% end %>
 
     <input type="submit" value="Close Receipt">
   
