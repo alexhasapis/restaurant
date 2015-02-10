@@ -22,7 +22,7 @@ end
 class Restaurant <Sinatra::Base
 
   enable :sessions
-  enable :method_overide
+  enable :method_override
 
   #UTILITY ROUTES
   #helpers WaitersHelper
@@ -204,8 +204,12 @@ class Restaurant <Sinatra::Base
   #destroy
   delete '/foods/:id' do 
     deleted_food = Food.find(params[:id])
+    food_orders = deleted_food.orders
     deleted_food.destroy
     
+    food_orders.each do |order|
+      order.destroy
+    end
     redirect to ('/foods')
   end
 
@@ -223,8 +227,8 @@ class Restaurant <Sinatra::Base
 
   #wildcard route for invalid
   get '*' do
-    if session[:id]
-      redirect to('/index')
+    if session[:user_id]
+      redirect to ('/index')
     else
       "Please go to /set/user/id to log in."
     end

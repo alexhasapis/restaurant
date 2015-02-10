@@ -17,8 +17,8 @@
 
 <% if @party.number_guests > 6 %>
 
-    <label for="receipt_tip">Total:
-    <input id="receipt_tip" <input type="number"  name="receipt[total]" readonly value="<%= (@total * 0.18).round(2) %>">
+    <label for="receipt_tip">Tip:
+    <input id="receipt_tip" <input type="number"  name="receipt[tip]" readonly value="<%= (@total * 0.18).round(2) %>">
 
   <% else %>
  
