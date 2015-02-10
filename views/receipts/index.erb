@@ -1,5 +1,6 @@
 <h1>Receipts</h1> 
 <% @receipts.each do |receipt| %>
+<hr>
 <h2>Receipt # <%= receipt.id %></h2>
   <h4>Party # <%= receipt.party.id %>
   <ol>
@@ -10,8 +11,7 @@
         </li><br>
       <% end %>
   </ol>
-  <h4>Total: <%= receipt.total %></h4>
-  <h4>Tip: <%= receipt.tip %>
-  <h3>Grand Total: <%= receipt.total + receipt.tip %></h3>
-  <br>
+  <h4>Total: $<%= receipt.total %></h4>
+  <h4>Tip: $<%= receipt.tip %>
+  <h3>Grand Total: $<%= receipt.total + receipt.tip %></h3>
 <% end %>

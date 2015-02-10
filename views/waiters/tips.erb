@@ -1,0 +1,14 @@
+<h1><%= @waiter.name %>'s Tips</h1>
+<%if @waiter.receipts != [] %>
+  <ul>
+    <% @waiter.receipts.map do |receipt| %>
+      <li>
+        Receipt #<%= receipt.id %>: $<%= receipt.tip %>
+      </li>
+    <% end %>
+  </ul>
+  <h3>Total Tips: $<%= @waiter.receipts.sum(:tip) %>
+<% else %>
+<h2> You have no tips yets!</h2>
+<% end %>
+
