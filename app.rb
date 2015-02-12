@@ -1,17 +1,16 @@
 # establish connection with DB
 ActiveRecord::Base.establish_connection(
-  adapter: "postgresql", 
+  adapter: "postgresql",
   database: "restaurant",
 )
 
-#require models
-Dir["models/*.rb"].each do |file|
-  require_relative file
-end  
 
-Dir["helpers/*.rb"].each do |file|
-  require_relative file
-end  
+#require models
+['models', 'helpers', 'controllers'].each do |component|
+  Dir["#{component}/*.rb"].sort.each do |file|
+    require File.expand_path(file)
+  end
+end
 
   #CONFIGURE SASS
   configure do
@@ -47,10 +46,6 @@ class Restaurant <Sinatra::Base
     erb :index
   end
 
-  get '/foods' do 
-    @foods = Food.all.order(:course, :style)
-    erb :'/foods/index'
-  end
 
   #only show parties that have not paid
   get '/parties' do
@@ -71,30 +66,16 @@ class Restaurant <Sinatra::Base
 
   #new routes
   #create food
-  get "/foods/new" do
-    erb :'foods/new'
-  end
 
-  post "/foods" do 
-    new_food = Food.create(params[:food])
 
-    if new_food.valid?
-      redirect to ("/foods/#{new_food.id}")
-    else
-      @food = new_food
-      @error_messages = new_food.errors.messages
 
-      erb :'foods/new'
-    end
-
-  end
 
   #create parties
   get "/parties/new" do
     erb :'parties/new'
   end
 
-  post "/parties" do 
+  post "/parties" do
     #Pry.start(binding)
     @new_party = Party.create(params[:party])
     redirect to ("/parties/#{@new_party.id}")
@@ -109,14 +90,14 @@ class Restaurant <Sinatra::Base
     erb :'orders/new'
   end
 
-  post "/parties/:id/orders" do 
+  post "/parties/:id/orders" do
     params[:order].each do |order, quantity|
       if quantity[:quantity].to_i > 0
-        Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])  
+        Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])
       end
     end
-    
-    redirect to ("/parties/#{params[:id]}") 
+
+    redirect to ("/parties/#{params[:id]}")
   end
 
   #CLOSE ORDERS
@@ -132,18 +113,7 @@ class Restaurant <Sinatra::Base
 
   #EDIT ROUTES
   #update
-  get '/foods/:id/edit' do |item|
-    @food = Food.find(item)
-    erb :'foods/edit'
-  end
 
-  patch '/foods/:id' do 
-    edited_food = Food.find(params[:id])
-    edited_food.update(params[:food])
-    edited_food.save
-    
-    redirect to ("/foods/#{edited_food.id}")
-  end
 
   get '/parties/:id/edit' do |group|
     @party = Party.find(group)
@@ -157,11 +127,11 @@ class Restaurant <Sinatra::Base
     erb :'orders/edit'
   end
 
-  patch "/parties/:id/orders" do 
+  patch "/parties/:id/orders" do
     params[:order].each do |order, quantity|
-      if Order.where("food_id = #{order.to_i} and party_id = #{params[:id]}" ) != []    
+      if Order.where("food_id = #{order.to_i} and party_id = #{params[:id]}" ) != []
         edit_order = Order.where( "food_id = #{order.to_i} and party_id = #{params[:id]}" )
-        
+
         edit_order.update_all(quantity: quantity[:quantity])
         if edit_order.first.quantity == 0
           edit_order.destroy_all
@@ -170,25 +140,21 @@ class Restaurant <Sinatra::Base
       Order.create(party_id: params[:id], food_id: order.to_i, quantity: quantity[:quantity])
       end
     end
-    redirect to ("/parties/#{params[:id]}") 
+    redirect to ("/parties/#{params[:id]}")
   end
 
 
-  patch '/parties/:id' do 
+  patch '/parties/:id' do
     edited_party = Party.find(params[:id])
     edited_party.update(params[:party])
     edited_party.save
-    
+
     redirect to ("/parties/#{edited_party.id}")
   end
 
   #SHOW ROUTES
 
   #Show Food with parties that have ordered
-  get '/foods/:id' do |item|
-    @food = Food.find(item)
-      erb :"foods/show"
-  end
 
   get '/parties/:id' do |group|
     @party = Party.find(group)
@@ -202,22 +168,12 @@ class Restaurant <Sinatra::Base
   end
 
   #destroy
-  delete '/foods/:id' do 
-    deleted_food = Food.find(params[:id])
-    food_orders = deleted_food.orders
-    deleted_food.destroy
-    
-    food_orders.each do |order|
-      order.destroy
-    end
-    redirect to ('/foods')
-  end
 
   delete '/parties/:id' do
     deleted_party = Party.find(params[:id])
     party_orders = deleted_party.orders
     deleted_party.destroy
-    
+
     party_orders.each do |order|
       order.destroy
     end
@@ -235,4 +191,3 @@ class Restaurant <Sinatra::Base
   end
 
 end
-
